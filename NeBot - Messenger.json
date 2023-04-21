@@ -1,0 +1,460 @@
+{
+    "name": "NeBot - Messenger",
+    "flow": [
+        {
+            "id": 1,
+            "module": "facebook-messenger:watchMessages",
+            "version": 2,
+            "parameters": {
+                "__IMTHOOK__": 498817
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "NeBot-Messenger webhook"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:facebook-messenger3",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 5,
+            "module": "openai-gpt-3:CreateCompletion",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 928435
+            },
+            "mapper": {
+                "select": "prompt",
+                "max_tokens": "100",
+                "temperature": "0.9",
+                "model": "text-davinci-003",
+                "prompt": "responde a \"{{1.message.text}}\""
+            },
+            "metadata": {
+                "designer": {
+                    "x": 355,
+                    "y": -11,
+                    "name": "OpenAI"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "label": "My OpenAI connection",
+                            "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                            }
+                        }
+                    },
+                    "expect": {
+                        "select": {
+                            "label": "Create a Prompt Completion"
+                        },
+                        "echo": {
+                            "mode": "chose"
+                        },
+                        "additionalParameters": {
+                            "mode": "chose"
+                        },
+                        "model": {
+                            "mode": "chose",
+                            "label": "text-davinci-003"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:openai-gpt-3",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Select Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "prompt",
+                                "chat"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "max_tokens",
+                        "type": "number",
+                        "label": "Max Tokens"
+                    },
+                    {
+                        "name": "temperature",
+                        "type": "number",
+                        "label": "Temperature"
+                    },
+                    {
+                        "name": "top_p",
+                        "type": "number",
+                        "label": "Top p"
+                    },
+                    {
+                        "name": "n_completions",
+                        "type": "number",
+                        "label": "N"
+                    },
+                    {
+                        "name": "echo",
+                        "type": "boolean",
+                        "label": "Echo"
+                    },
+                    {
+                        "name": "additionalParameters",
+                        "type": "array",
+                        "label": "Other Input Parameters",
+                        "spec": [
+                            {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Parameter Name",
+                                "required": true
+                            },
+                            {
+                                "name": "type",
+                                "type": "select",
+                                "label": "Input Type",
+                                "options": [
+                                    {
+                                        "label": "Text",
+                                        "value": "text",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "text",
+                                                "label": "Parameter Value"
+                                            }
+                                        ],
+                                        "default": true
+                                    },
+                                    {
+                                        "label": "Number",
+                                        "value": "number",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "number",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Boolean",
+                                        "value": "boolean",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Date",
+                                        "value": "date",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "date",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "label": "Any",
+                                        "value": "any",
+                                        "nested": [
+                                            {
+                                                "name": "value",
+                                                "type": "any",
+                                                "label": "Parameter Value"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "model",
+                        "type": "select",
+                        "label": "Model",
+                        "required": true
+                    },
+                    {
+                        "name": "prompt",
+                        "type": "any",
+                        "label": "Prompt"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 6,
+            "module": "facebook-messenger:sendMessage",
+            "version": 2,
+            "parameters": {
+                "__IMTCONN__": 975690
+            },
+            "mapper": {
+                "message": {
+                    "text": "🤖 {{5.choices[].text}}",
+                    "attachment": {}
+                },
+                "recipient": {
+                    "id": "{{1.sender.id}}"
+                },
+                "messaging_type": "RESPONSE",
+                "notification_type": "REGULAR"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 678,
+                    "y": -12
+                },
+                "restore": {
+                    "expect": {
+                        "message": {
+                            "nested": {
+                                "attachment": {
+                                    "nested": {
+                                        "type": {
+                                            "mode": "chose",
+                                            "label": "Empty"
+                                        }
+                                    }
+                                },
+                                "quick_replies": {
+                                    "mode": "chose"
+                                }
+                            }
+                        },
+                        "messaging_type": {
+                            "mode": "chose",
+                            "label": "Response"
+                        },
+                        "notification_type": {
+                            "mode": "chose",
+                            "label": "Sound / Vibration"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "facebook-messenger2"
+                            },
+                            "label": "NeBot-Messenger"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:facebook-messenger2",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "messaging_type",
+                        "type": "select",
+                        "label": "Messaging Type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "RESPONSE",
+                                "UPDATE",
+                                "MESSAGE_TAG"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "recipient",
+                        "spec": [
+                            {
+                                "name": "id",
+                                "type": "text",
+                                "label": "Page Scoped User ID (PSID)"
+                            },
+                            {
+                                "name": "user_ref",
+                                "type": "text",
+                                "label": "User Reference"
+                            },
+                            {
+                                "name": "post_id",
+                                "type": "text",
+                                "label": "Post ID"
+                            },
+                            {
+                                "name": "comment_id",
+                                "type": "text",
+                                "label": "Comment ID"
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Recipient"
+                    },
+                    {
+                        "name": "message",
+                        "spec": [
+                            {
+                                "name": "text",
+                                "type": "text",
+                                "label": "Text",
+                                "validate": {
+                                    "max": 2000
+                                }
+                            },
+                            {
+                                "name": "attachment",
+                                "spec": [
+                                    {
+                                        "name": "type",
+                                        "type": "select",
+                                        "label": "Attachment Type",
+                                        "validate": {
+                                            "enum": [
+                                                "image",
+                                                "audio",
+                                                "video",
+                                                "file",
+                                                "template"
+                                            ]
+                                        }
+                                    }
+                                ],
+                                "type": "collection",
+                                "label": "Attachment"
+                            },
+                            {
+                                "name": "quick_replies",
+                                "spec": [
+                                    {
+                                        "name": "content_type",
+                                        "type": "select",
+                                        "label": "Content Type",
+                                        "options": [
+                                            {
+                                                "label": "Text",
+                                                "value": "text",
+                                                "nested": [
+                                                    {
+                                                        "help": "The text to display on the quick reply button.",
+                                                        "name": "title",
+                                                        "type": "text",
+                                                        "label": "Title",
+                                                        "required": true,
+                                                        "validate": {
+                                                            "max": 20
+                                                        }
+                                                    },
+                                                    {
+                                                        "help": "Custom data that will be sent back to you via the `messaging_postbacks` webhook event.",
+                                                        "name": "payload",
+                                                        "type": "text",
+                                                        "label": "Payload",
+                                                        "validate": {
+                                                            "max": 1000
+                                                        }
+                                                    },
+                                                    {
+                                                        "help": "Required if `Title` is an `emptystring`. URL of image to display on the quick reply button for text quick replies. Image should be a minimum of 24px x 24px. Larger images will be automatically cropped and resized.",
+                                                        "name": "image_url",
+                                                        "type": "url",
+                                                        "label": "Image URL"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "label": "User Phone Number",
+                                                "value": "user_phone_number"
+                                            },
+                                            {
+                                                "label": "User Email",
+                                                "value": "user_email"
+                                            }
+                                        ],
+                                        "required": true
+                                    }
+                                ],
+                                "type": "array",
+                                "label": "Quick Replies"
+                            },
+                            {
+                                "name": "metadata",
+                                "type": "text",
+                                "label": "Metadata",
+                                "validate": {
+                                    "max": 1000
+                                }
+                            }
+                        ],
+                        "type": "collection",
+                        "label": "Message"
+                    },
+                    {
+                        "name": "notification_type",
+                        "type": "select",
+                        "label": "Notification Type",
+                        "validate": {
+                            "enum": [
+                                "REGULAR",
+                                "SILENT_PUSH",
+                                "NO_PUSH"
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "eu1.make.com"
+    }
+}
