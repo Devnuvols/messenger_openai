@@ -3,6 +3,7 @@ Contestador automático de Messenger impulsado por OpenAI
 Con esta automatización vamos a responder los mensajes que se reciben en Messenger
 mediante la ayuda de OpenAI
 
+https://nocodetips.blogspot.com/2023/04/messenger-reply-openai.html
 
 descarga el archivo .JSON
 
